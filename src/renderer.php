@@ -37,10 +37,39 @@ defined('MOODLE_INTERNAL') || die;
 class report_awesome_renderer extends plugin_renderer_base {
     use lang;
 
+    /**
+     * Delete base URL.
+     *
+     * @var \moodle_url
+     */
     protected $deleteurl;
+
+    /**
+     * Edit base URL.
+     *
+     * @var \moodle_url
+     */
     protected $editurl;
+
+    /**
+     * Delete icon.
+     *
+     * @var \pix_icon
+     */
     protected $deleteicon;
+
+    /**
+     * Edit icon.
+     *
+     * @var \pix_icon
+     */
     protected $editicon;
+
+    /**
+     * Editing tabs.
+     *
+     * @var \tabobject[]
+     */
     protected $tabs;
 
     /**
@@ -101,7 +130,7 @@ class report_awesome_renderer extends plugin_renderer_base {
      *
      * @return string Rendered HTML.
      */
-    public function report_tabs($report, $selected='edit') {
+    public function report_tabs($report, $selected='details') {
         foreach ($this->tabs as $tab) {
             $tab->link->param('id', $report->id);
         }
