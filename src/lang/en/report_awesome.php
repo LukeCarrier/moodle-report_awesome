@@ -32,3 +32,28 @@ $string['pluginname'] = 'Awesome';
 // Capabilities
 $string['awesome:manage'] = 'Manage awesome reports';
 $string['awesome:view']   = 'View awesome reports';
+
+// Report administration and details tab
+$string['confirmdelete'] = 'Are you sure you wish to delete the "{$a->name}" report?';
+$string['createreport']  = 'Create an awesome report';
+$string['deletereport']  = 'Delete "{$a->name}" report';
+$string['details']       = 'Details';
+$string['editreport']    = 'Edit "{$a->name}" report';
+$string['sources']       = 'Sources';
+$string['managereports'] = 'Manage awesome reports';
+
+// Report sources tab
+$string['display']          = 'Fields to display';
+$string['error:oneprimary'] = 'There must be exactly <strong><em>1</em></strong> primary source, but <strong><em>{$a}</em></strong> were selected';
+$string['primary']          = 'Primary?';
+
+// Report model
+$string['reportname'] = 'Name';
+
+// Sources
+$string['source:user']          = 'User';
+$string['source:user:id']       = 'ID';
+$string['source:user:username'] = 'Username';
+
+// Exceptions
+$string['invalideditparam'] = 'Invalid edit parameter';
