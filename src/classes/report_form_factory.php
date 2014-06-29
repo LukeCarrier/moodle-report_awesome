@@ -59,13 +59,11 @@ class report_form_factory {
     /**
      * Get an instance.
      *
-     * @param string  $name       The name of the class to retrieve.
-     * @param mixed[] $customdata The data to be retained in the form's
-     *                            custom data attribute.
+     * @param string $name The name of the class to retrieve.
      *
      * @return \moodleform The form.
      */
-    public static function instance($name, $customdata) {
+    public static function instance($name) {
         if (!array_key_exists($name, static::$classmap)) {
             return false;
         }
@@ -74,6 +72,6 @@ class report_form_factory {
                 : new moodle_url('/report/awesome/edit.php', array('edit' => $name));
         $classname = static::$classmap[$name];
 
-        return new $classname($action, $customdata);
+        return new $classname($action);
     }
 }

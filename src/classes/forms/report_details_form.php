@@ -40,6 +40,33 @@ class report_details_form extends moodleform {
     use lang;
 
     /**
+     * Commit changes.
+     *
+     * @return void
+     */
+    public function commit() {
+        global $DB;
+
+        if (($data = $this->get_data()) === null) {
+            return null;
+        }
+
+        $record = (object) array(
+            'name' => $data->name,
+        );
+
+        if ($data->id > 0) {
+            $record->id = $data->id;
+            $DB->update_record('awe_reports', $record);
+        } else {
+            $record->id = $DB->insert_record('awe_reports', $record);
+        }
+
+        return $record;
+    }
+
+
+    /**
      * @override \moodleform
      */
     public function definition() {
@@ -59,19 +86,14 @@ class report_details_form extends moodleform {
     }
 
     /**
-     * Set defaults from custom data.
+     * @override \moodleform
      *
-     * Sets constant and default values from those contained within the form's
-     * custom data.
-     *
-     * @return void
+     * @param stdClass $report The report to set defaults for.
      */
-    protected function set_defaults_from_customdata() {
-        $mform  = $this->_form;
-        $report = $this->_customdata['report'];
-
-        $mform->setConstant('id', $report->id);
-
-        $mform->setDefault('name', $report->name);
+    public function set_data($report) {
+        parent::set_data(array(
+            'id'   => $report->id,
+            'name' => $report->name,
+        ));
     }
 }

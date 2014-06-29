@@ -41,15 +41,19 @@ defined('MOODLE_INTERNAL') || die;
 class report_sources_form extends moodleform {
     use lang;
 
-    public function field_select_options($source) {
-        $options    = array();
-        $sourcename = $source->base_name();
+    /**
+     * Commit changes.
+     */
+    public function commit() {
+        global $DB;
 
-        foreach ($source->fields() as $field) {
-            $options[$field] = static::lang_string("source:{$sourcename}:{$field}");
+        if (($data = $this->get_data()) === null) {
+            return null;
         }
 
-        return $options;
+        $record = $DB->get_record('awe_reports', array('id' => $data->id));
+
+        return $record;
     }
 
     /**
@@ -65,7 +69,7 @@ class report_sources_form extends moodleform {
             $source = source_factory::instance($sourcename);
 
             $mform->addElement('header', $sourcename,
-                               static::lang_string("source:$sourcename"));
+                               static::lang_string("source:{$sourcename}"));
 
             // XXX: sources in use in a report shouldn't be collapsed
 
@@ -78,24 +82,27 @@ class report_sources_form extends moodleform {
             $element->setMultiple(true);
         }
 
-        $this->set_defaults_from_customdata();
-
         $this->add_action_buttons();
     }
 
     /**
-     * Set defaults from custom data.
+     * Generate <options> for a <select>.
      *
-     * Sets constant and default values from those contained within the form's
-     * custom data.
+     * @param \report_awesome\source $source The report source object to generate
+     *                                       options for.
      *
-     * @return void
+     * @return string[] An array of the options ready for passing to the form's
+     *                  addElement method.
      */
-    protected function set_defaults_from_customdata() {
-        $mform  = $this->_form;
-        $report = $this->_customdata['report'];
+    protected function field_select_options($source) {
+        $options    = array();
+        $sourcename = $source->base_name();
 
-        $mform->setConstant('id', $report->id);
+        foreach ($source->fields() as $field) {
+            $options[$field] = static::lang_string("source:{$sourcename}:{$field}");
+        }
+
+        return $options;
     }
 
     /**
@@ -117,7 +124,7 @@ class report_sources_form extends moodleform {
         }
 
         $numprimarysources = count($primarysources);
-        if ($numprimarysources >= 0) {
+        if ($numprimarysources !== 1) {
             $primarysources = $numprimarysources > 1 ? $primarysources : $sources;
             foreach ($primarysources as $sourcename) {
                 $errors["{$sourcename}_primary"] = static::lang_string_now('error:oneprimary', $numprimarysources);

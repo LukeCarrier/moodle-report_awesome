@@ -58,20 +58,11 @@ $renderer = $PAGE->get_renderer('report_awesome');
 
 if ($mform->is_cancelled()) {
     redirect($cancelurl);
-} elseif ($data = $mform->get_data()) {
-    $record = (object) array(
-        'name' => $data->name,
-    );
-
-    if ($data->id > 0) {
-        $record->id = $data->id;
-        $DB->update_record('awe_reports', $record);
-    } else {
-        $record->id = $DB->insert_record('awe_reports', $record);
-    }
-
+} elseif ($record = $mform->commit()) {
     redirect($url->out(false, array('id' => $record->id)));
 } else {
+    $mform->set_data($report);
+
     echo $OUTPUT->header(),
          $OUTPUT->heading($heading);
     if ($report !== null) {
