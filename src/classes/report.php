@@ -130,6 +130,20 @@ class report {
     }
 
     /**
+     * Property writer.
+     *
+     * Allow write access to internal state.
+     *
+     * @param string $property The property of the report object to set.
+     * @param mixed  $value    The value to apply to the property.
+     *
+     * @return void
+     */
+    public function __set($property, $value) {
+        $this->{$property} = $value;
+    }
+
+    /**
      * Add a source to the report.
      */
     public function add_source(source $source) {
@@ -137,8 +151,19 @@ class report {
 
     /**
      * Commit changes to the report and associated sources.
+     *
+     * @return void
      */
     public function commit() {
+        global $DB;
+
+        $record = $this->to_dml();
+
+        if ($this->id !== null) {
+            $DB->update_record(static::TABLE_REPORTS, $record);
+        } else {
+            $this->id = $DB->insert_record(static::TABLE_REPORTS, $record);
+        }
     }
 
     /**

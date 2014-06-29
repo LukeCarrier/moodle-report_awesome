@@ -27,6 +27,7 @@
 namespace report_awesome\forms;
 
 use moodleform;
+use report_awesome\report;
 use report_awesome\traits\lang;
 
 defined('MOODLE_INTERNAL') || die;
@@ -51,16 +52,11 @@ class report_details_form extends moodleform {
             return null;
         }
 
-        $record = (object) array(
-            'name' => $data->name,
-        );
-
+        $record = new report($data->name);
         if ($data->id > 0) {
             $record->id = $data->id;
-            $DB->update_record('awe_reports', $record);
-        } else {
-            $record->id = $DB->insert_record('awe_reports', $record);
         }
+        $record->commit();
 
         return $record;
     }
@@ -79,10 +75,6 @@ class report_details_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
 
         $this->add_action_buttons();
-
-        if ($this->_customdata['report'] !== null) {
-            $this->set_defaults_from_customdata();
-        }
     }
 
     /**
