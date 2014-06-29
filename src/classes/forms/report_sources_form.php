@@ -18,9 +18,9 @@
 /**
  * TDM: Course module access report.
  *
- * @package   report_tdmmodaccess
- * @author    Luke Carrier <luke@tdm.co>
- * @copyright (c) 2014 The Development Manager Ltd
+ * @package   report_awesome
+ * @author    Luke Carrier <luke@carrier.im>
+ * @copyright (c) 2014 Luke Carrier
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
