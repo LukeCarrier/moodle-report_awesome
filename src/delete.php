@@ -36,7 +36,7 @@ $confirmed = optional_param('confirm', false, PARAM_BOOL);
 $report = report::instance($reportid);
 
 $url       = new moodle_url('/report/awesome/delete.php', array('id' => $reportid));
-$heading   = new lang_string('deletereport', 'report_awesome', $report);
+$heading   = new lang_string('deletereport', 'report_awesome', $report->to_dml());
 $targeturl = new moodle_url('/report/awesome/index.php');
 
 admin_externalpage_setup('reportawesomemanage');
@@ -50,7 +50,7 @@ if ($confirmed && confirm_sesskey()) {
 } else {
     echo $OUTPUT->header(),
          $OUTPUT->heading($heading),
-         $OUTPUT->confirm(new lang_string('confirmdelete', 'report_awesome', $report),
+         $OUTPUT->confirm(new lang_string('confirmdelete', 'report_awesome', $report->to_dml()),
                           $url->out(false, array('confirm' => true, 'sesskey' => sesskey())),
                           $targeturl);
          $OUTPUT->footer();
