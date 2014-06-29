@@ -28,6 +28,7 @@ require_once dirname(dirname(__DIR__)) . '/config.php';
 require_once "{$CFG->libdir}/adminlib.php";
 
 use report_awesome\exceptions\invalid_edit_param_exception;
+use report_awesome\report;
 use report_awesome\report_form_factory;
 
 $editform = optional_param('edit', 'details', PARAM_ALPHA);
@@ -37,11 +38,11 @@ $url       = new moodle_url('/report/awesome/edit.php');
 $cancelurl = new moodle_url('/report/awesome/index.php');
 
 if ($reportid === 0) {
-    $report  = null;
+    $report  = new report;
     $heading = new lang_string('createreport', 'report_awesome');
 } else {
-    $report  = $DB->get_record('awe_reports', array('id' => $reportid), '*', MUST_EXIST);
-    $heading = new lang_string('editreport', 'report_awesome', $report);
+    $report  = report::instance($reportid);
+    $heading = new lang_string('editreport', 'report_awesome', $report->to_dml());
 
     $url->param('id', $reportid);
 }
@@ -51,7 +52,8 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);
 $PAGE->navbar->add($heading, $PAGE->url->out(false));
 
-if (!$mform = report_form_factory::instance($editform, array('report' => $report))) {
+if (!($mform = report_form_factory::instance($editform))
+        || ($report->id === null && $editform !== 'details')) {
     throw new invalid_edit_param_exception();
 }
 $renderer = $PAGE->get_renderer('report_awesome');
@@ -65,7 +67,7 @@ if ($mform->is_cancelled()) {
 
     echo $OUTPUT->header(),
          $OUTPUT->heading($heading);
-    if ($report !== null) {
+    if ($report->id !== null) {
         echo $renderer->report_tabs($report, $editform);
     }
     $mform->display();

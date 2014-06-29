@@ -28,12 +28,12 @@ require_once dirname(dirname(__DIR__)) . '/config.php';
 require_once "{$CFG->libdir}/adminlib.php";
 
 use report_awesome\forms\report_details_form;
+use report_awesome\report;
 
 $reportid  = optional_param('id',      null,  PARAM_INT);
 $confirmed = optional_param('confirm', false, PARAM_BOOL);
 
-$report = $DB->get_record('awe_reports', array('id' => $reportid), '*',
-                          MUST_EXIST);
+$report = report::instance($reportid);
 
 $url       = new moodle_url('/report/awesome/delete.php', array('id' => $reportid));
 $heading   = new lang_string('deletereport', 'report_awesome', $report);

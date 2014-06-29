@@ -28,6 +28,7 @@ namespace report_awesome\forms;
 
 use lang_string;
 use moodleform;
+use report_awesome\report;
 use report_awesome\source_factory;
 use report_awesome\traits\lang;
 
@@ -51,9 +52,9 @@ class report_sources_form extends moodleform {
             return null;
         }
 
-        $record = $DB->get_record('awe_reports', array('id' => $data->id));
+        var_dump($data);
 
-        return $record;
+        return report::instance($data->id);
     }
 
     /**
@@ -103,6 +104,17 @@ class report_sources_form extends moodleform {
         }
 
         return $options;
+    }
+
+    /**
+     * @override \moodleform
+     *
+     * @param stdClass $report The report to set defaults for.
+     */
+    public function set_data($report) {
+        parent::set_data(array(
+            'id' => $report->id,
+        ));
     }
 
     /**
