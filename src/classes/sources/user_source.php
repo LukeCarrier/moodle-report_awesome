@@ -26,14 +26,14 @@
 
 namespace report_awesome\sources;
 
-use report_awesome\source;
+use report_awesome\abstract_source;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
  * User source.
  */
-class user_source extends abstract_database_source implements source {
+class user_source extends abstract_source {
     const TABLE_USER = 'user';
 
     public function base_alias() {

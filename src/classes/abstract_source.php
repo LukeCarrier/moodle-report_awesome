@@ -29,12 +29,59 @@ namespace report_awesome;
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Report source interface.
+ * Report source base class.
  *
  * Report sources form the basis of Awesome reports. They can be connected
  * together and filtered to produce complex reports.
  */
-interface source {
+abstract class abstract_source extends abstract_model {
+    /**
+     * Report ID.
+     *
+     * @var integer
+     */
+    protected $reportid;
+
+    /**
+     * Source name.
+     *
+     * @var string
+     */
+    protected $source;
+
+    /**
+     * Is the source the report's primary source?
+     *
+     * @var boolean
+     */
+    protected $primary;
+
+    /**
+     * Initialiser.
+     *
+     * @param string $name Report name.
+     */
+    public function __construct($reportid=null, $primary=null) {
+        $this->reportid = $reportid;
+        $this->primary  = $primary;
+
+        $this->source = $this->base_name();
+    }
+
+    /**
+     * @override \report_awesome\abstract_model
+     */
+    public static function dml_fields() {
+        return array('reportid', 'source', 'primary');
+    }
+
+    /**
+     * @override \report_awesome\abstract_model
+     */
+    public static function dml_table() {
+        return 'awe_sources';
+    }
+
     /**
      * Return source's base alias.
      *
@@ -42,7 +89,7 @@ interface source {
      *
      * @return string
      */
-    public function base_alias();
+    abstract public function base_alias();
 
     /**
      * Return source's name
@@ -52,12 +99,12 @@ interface source {
      *
      * @return string
      */
-    public function base_name();
+    abstract public function base_name();
 
     /**
      * Return a list of available fields.
      *
      * @return string[]
      */
-    public function fields();
+    abstract public function fields();
 }

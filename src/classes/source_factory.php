@@ -57,9 +57,9 @@ class source_factory {
      *
      * @paramn string $name The name of the source.
      *
-     * @return \report_awesome\source An instance of the source.
+     * @return \report_awesome\abstract_source An instance of the source.
      */
-    public static function instance($name) {
+    public static function new_instance($name) {
         if (!array_key_exists($name, static::$classmap)) {
             return false;
         }

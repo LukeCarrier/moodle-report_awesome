@@ -52,9 +52,17 @@ class report_sources_form extends moodleform {
             return null;
         }
 
-        var_dump($data);
+        $report = report::instance($data->id);
 
-        return report::instance($data->id);
+        foreach (source_factory::index() as $sourcename) {
+            $source = source_factory::new_instance($sourcename);
+            $source->primary = property_exists($data, "{$sourcename}_primary");
+
+            var_dump($data);
+            var_dump($source);
+        }
+
+        return $report;
     }
 
     /**
@@ -67,7 +75,7 @@ class report_sources_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         foreach (source_factory::index() as $sourcename) {
-            $source = source_factory::instance($sourcename);
+            $source = source_factory::new_instance($sourcename);
 
             $mform->addElement('header', $sourcename,
                                static::lang_string("source:{$sourcename}"));
@@ -89,8 +97,8 @@ class report_sources_form extends moodleform {
     /**
      * Generate <options> for a <select>.
      *
-     * @param \report_awesome\source $source The report source object to generate
-     *                                       options for.
+     * @param \report_awesome\abstract_source $source The report source object
+     *                                                to generate options for.
      *
      * @return string[] An array of the options ready for passing to the form's
      *                  addElement method.
