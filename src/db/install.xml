@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<XMLDB PATH="report/awesome/db" VERSION="20140628"
+       COMMENT="XMLDB file for report_awesome"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../lib/xmldb/xmldb.xsd">
+    <!--
+      = Report: awesome.
+      =
+      = @package   report_awesome
+      = @author    Luke Carrier <luke@carrier.im>
+      = @copyright (c) 2014 Luke Carrier
+      = @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+      -->
+    <TABLES>
+        <TABLE NAME="awe_reports" COMMENT="Awesome reports">
+            <FIELDS>
+                <FIELD NAME="id"   TYPE="int"  LENGTH="10"  NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true"                 />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="awe_sources" COMMENT="Awesome sources">
+            <FIELDS>
+                <FIELD NAME="id"       TYPE="int"  LENGTH="10"  NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="reportid" TYPE="int"  LENGTH="10"  NOTNULL="true"                 />
+                <FIELD NAME="source"   TYPE="char" LENGTH="255" NOTNULL="true"                 />
+                <FIELD NAME="primary"  TYPE="int"  LENGTH="1"   NOTNULL="true"                 />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="reportid_source" UNIQUE="true" FIELDS="reportid,source" />
+            </INDEXES>
+        </TABLE>
+
+        <TABLE NAME="awe_fields" COMMENT="Awesome source fields to display">
+            <FIELDS>
+                <FIELD NAME="id"       TYPE="int"  LENGTH="10"  NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="sourceid" TYPE="int"  LENGTH="10"  NOTNULL="true"                 />
+                <FIELD NAME="field"    TYPE="char" LENGTH="255" NOTNULL="true"                 />
+                <FIELD NAME="display"  TYPE="int"  LENGTH="1"   NOTNULL="true"                 />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="sourceid_field" UNIQUE="true" FIELDS="sourceid,field" />
+            </INDEXES>
+        </TABLE>
+    </TABLES>
+</XMLDB>
