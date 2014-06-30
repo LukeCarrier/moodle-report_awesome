@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TDM: Course module access report.
+ * Report: Awesome.
  *
  * @package   report_awesome
  * @author    Luke Carrier <luke@carrier.im>
