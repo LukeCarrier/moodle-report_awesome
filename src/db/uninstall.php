@@ -31,7 +31,7 @@ function xmldb_report_awesome_uninstall() {
     $tables = array('fields', 'reports', 'sources');
     foreach ($tables as $table) {
         if ($dbman->table_exists("awe_{$table}")) {
-            $dbman->drop_table($table);
+            $dbman->drop_table(new xmldb_table("awe_{$table}"));
         }
     }
 
