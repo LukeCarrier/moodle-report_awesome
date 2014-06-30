@@ -39,7 +39,7 @@ trait lang {
      *
      * @var string
      */
-    static $LANG_MODULE = 'report_awesome';
+    protected static $LANG_MODULE = 'report_awesome';
 
     /**
      * Shorthand method for obtaining lazy-loadable language strings.
