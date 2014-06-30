@@ -153,11 +153,25 @@ abstract class abstract_model {
      * @return void
      */
     public function populate($record) {
+        $this->sync_dml_values($record, $this);
+    }
+
+    /**
+     * Copy DML field values from one object to another.
+     *
+     * @param stdClass $from The object containing the fields.
+     * @param stdClass $to   The object to copy them to.
+     *
+     * @return stdClass The modified $to object.
+     */
+    protected function sync_dml_values($from, $to) {
         foreach (static::dml_fields() as $field) {
-            $this->{$field} = $record->{$field};
+            $to->{$field} = $from->{$field};
         }
 
-        $this->id = $record->id;
+        $to->id = $from->id;
+
+        return $to;
     }
 
     /**
@@ -166,13 +180,6 @@ abstract class abstract_model {
      * @return stdClass A DML record object representing the object's fields.
      */
     public function to_dml() {
-        $record = new stdClass();
-        foreach (static::dml_fields() as $field) {
-            $record->{$field} = $this->{$field};
-        }
-
-        $record->id = $this->id;
-
-        return $record;
+        return $this->sync_dml_values($this, new stdClass());
     }
 }
