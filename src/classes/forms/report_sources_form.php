@@ -26,7 +26,6 @@
 
 namespace report_awesome\forms;
 
-use lang_string;
 use moodleform;
 use report_awesome\report;
 use report_awesome\source_factory;
