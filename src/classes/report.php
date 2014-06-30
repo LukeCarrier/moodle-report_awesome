@@ -53,12 +53,20 @@ class report extends abstract_model {
      */
     public function __construct($name=null) {
         $this->name = $name;
+
+        $this->sources = array();
     }
 
     /**
-     * Add a source to the report.
+     * @override \report_awesome\abstract_model
      */
-    public function add_source(source $source) {
+    public function commit() {
+        parent::commit();
+
+        foreach ($this->sources as $source) {
+            $source->reportid = $this->id;
+            $source->commit();
+        }
     }
 
     /**
@@ -73,6 +81,46 @@ class report extends abstract_model {
      */
     public static function dml_table() {
         return 'awe_reports';
+    }
+
+    /**
+     * Get or add a source to the report.
+     *
+     * @param string $sourcename The name of the source to retrieve or add.
+     *
+     * @return \report_awesome\abstract_source The source object.
+     */
+    public function get_source($sourcename) {
+        $this->maybe_reload_sources();
+
+        if (!array_key_exists($sourcename, $this->sources)) {
+            $this->sources[$sourcename] = source_factory::new_instance($sourcename);
+        }
+
+        return $this->sources[$sourcename];
+    }
+
+    /**
+     * Get an array of all sources associated with the report.
+     *
+     * @return \report_awesome\abstract_source[] An array of associated source
+     *                                           objects.
+     */
+    public function get_sources() {
+        $this->maybe_reload_sources();
+
+        return $this->sources;
+    }
+
+    /**
+     * Reload sources if empty.
+     *
+     * @return void
+     */
+    public function maybe_reload_sources() {
+        if (count($this->sources) === 0) {
+            $this->reload_sources();
+        }
     }
 
     /**
@@ -94,16 +142,6 @@ class report extends abstract_model {
      * @return void
      */
     public function reload_sources() {
-        global $DB;
-
-        //
-
-        $this->sources = array();
-        // foreach ($records as $record) {
-        //     // $source = source_factory::instance($record->source);
-        //     // $source->populate($record);
-
-        //     $this->sources[] = $source;
-        // }
+        $this->sources = source_factory::existing_instances($this->id);
     }
 }

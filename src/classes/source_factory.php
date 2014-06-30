@@ -44,6 +44,28 @@ class source_factory {
     );
 
     /**
+     * Get source objects for a report.
+     *
+     * @param integer $reportid The ID of the report for which to retrieve
+     *                          sources.
+     *
+     * @return \report_awesome\abstract_source[] An array of report source
+     *                                           objects.
+     */
+    public static function existing_instances($reportid) {
+        global $DB;
+
+        $records = $DB->get_records('awe_sources', array('reportid' => $reportid));
+        $sources = array();
+
+        foreach ($records as $record) {
+            $sources[$record->source] = static::instance_from_dml($record);
+        }
+
+        return $sources;
+    }
+
+    /**
      * Return an index of all known source names.
      *
      * @return string[] An index of all known source names.
@@ -53,19 +75,43 @@ class source_factory {
     }
 
     /**
+     * Assemble a record instance from a raw DML record.
+     *
+     * @param stdClass $record The raw record from the DML API.
+     *
+     * @return \report_awesome\abstract_source The source object.
+     */
+    protected static function instance_from_dml($record) {
+        $classname = static::resolve($record->source);
+
+        return $classname::from_dml($record);
+    }
+
+    /**
      * Return an instance of the named source.
      *
-     * @paramn string $name The name of the source.
+     * @paramn string $sourcename The name of the source.
      *
      * @return \report_awesome\abstract_source An instance of the source.
      */
-    public static function new_instance($name) {
-        if (!array_key_exists($name, static::$classmap)) {
+    public static function new_instance($sourcename) {
+        $classname = static::resolve($sourcename);
+
+        return new $classname();
+    }
+
+    /**
+     * Resolve a class name from a source name.
+     *
+     * @param string $sourcename The name of the source.
+     *
+     * @return string The source's class name.
+     */
+    protected static function resolve($sourcename) {
+        if (!array_key_exists($sourcename, static::$classmap)) {
             return false;
         }
 
-        $classname = static::$classmap[$name];
-
-        return new $classname();
+        return static::$classmap[$sourcename];
     }
 }

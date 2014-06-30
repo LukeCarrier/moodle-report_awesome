@@ -43,6 +43,8 @@ class report_sources_form extends moodleform {
 
     /**
      * Commit changes.
+     *
+     * @return \report_awesome\report The post-modification report object.
      */
     public function commit() {
         global $DB;
@@ -54,12 +56,16 @@ class report_sources_form extends moodleform {
         $report = report::instance($data->id);
 
         foreach (source_factory::index() as $sourcename) {
-            $source = source_factory::new_instance($sourcename);
-            $source->primary = property_exists($data, "{$sourcename}_primary");
+            $source = $report->get_source($sourcename);
 
-            var_dump($data);
-            var_dump($source);
+            $source->isprimary = property_exists($data, "{$sourcename}_isprimary");
+
+            if (property_exists($data, "{$sourcename}_display")) {
+                $source->set_display_fields($data->{"{$sourcename}_display"});
+            }
         }
+
+        $report->commit();
 
         return $report;
     }
@@ -81,8 +87,8 @@ class report_sources_form extends moodleform {
 
             // XXX: sources in use in a report shouldn't be collapsed
 
-            $mform->addElement('checkbox', "{$sourcename}_primary",
-                               static::lang_string('primary'));
+            $mform->addElement('checkbox', "{$sourcename}_isprimary",
+                               static::lang_string('isprimary'));
 
             $element = $mform->addElement('select', "{$sourcename}_display",
                                           static::lang_string('display'),
@@ -106,7 +112,7 @@ class report_sources_form extends moodleform {
         $options    = array();
         $sourcename = $source->base_name();
 
-        foreach ($source->fields() as $field) {
+        foreach ($source->available_fields() as $field) {
             $options[$field] = static::lang_string("source:{$sourcename}:{$field}");
         }
 
@@ -119,9 +125,18 @@ class report_sources_form extends moodleform {
      * @param stdClass $report The report to set defaults for.
      */
     public function set_data($report) {
-        parent::set_data(array(
-            'id' => $report->id,
-        ));
+        $data = array('id' => $report->id);
+
+        foreach ($report->get_sources() as $sourcename => $source) {
+            $data["{$sourcename}_isprimary"] = $source->isprimary;
+
+            $data["{$sourcename}_display"] = array();
+            foreach ($source->get_display_fields() as $fieldname => $field) {
+                $data["{$sourcename}_display"][] = $fieldname;
+            }
+        }
+
+        parent::set_data($data);
     }
 
     /**
@@ -137,7 +152,7 @@ class report_sources_form extends moodleform {
 
         $primarysources = array();
         foreach ($sources as $sourcename) {
-            if (array_key_exists("{$sourcename}_primary", $data)) {
+            if (array_key_exists("{$sourcename}_isprimary", $data)) {
                 $primarysources[] = $sourcename;
             }
         }
@@ -146,7 +161,7 @@ class report_sources_form extends moodleform {
         if ($numprimarysources !== 1) {
             $primarysources = $numprimarysources > 1 ? $primarysources : $sources;
             foreach ($primarysources as $sourcename) {
-                $errors["{$sourcename}_primary"] = static::lang_string_now('error:oneprimary', $numprimarysources);
+                $errors["{$sourcename}_isprimary"] = static::lang_string_now('error:oneprimary', $numprimarysources);
             }
         }
 

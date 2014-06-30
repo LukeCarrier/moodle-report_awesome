@@ -24,44 +24,23 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace report_awesome\sources;
+namespace report_awesome\exceptions;
 
-use report_awesome\abstract_source;
+use moodle_exception;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * User source.
+ * Invalid field exception.
+ *
+ * Thrown when attempting to get an instance of a field which does not exist
+ * within the relevant source.
  */
-class user_source extends abstract_source {
+class invalid_field_exception extends moodle_exception {
     /**
-     * User table name.
-     *
-     * @var string
+     * @override \moodle_exception
      */
-    const TABLE_USER = 'user';
-
-    /**
-     * @override \report_awesome\abstract_source
-     */
-    public function base_alias() {
-        return 'u';
-    }
-
-    /**
-     * @override \report_awesome\abstract_source
-     */
-    public function base_name() {
-        return 'user';
-    }
-
-    /**
-     * @override \report_awesome\abstract_source
-     */
-    public function available_fields() {
-        return array(
-            'id',
-            'username',
-        );
+    public function __construct() {
+        parent::__construct('invalidfield', 'report_awesome');
     }
 }

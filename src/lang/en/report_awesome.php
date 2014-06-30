@@ -45,7 +45,7 @@ $string['managereports'] = 'Manage awesome reports';
 // Report sources tab
 $string['display']          = 'Fields to display';
 $string['error:oneprimary'] = 'There must be exactly <strong><em>1</em></strong> primary source, but <strong><em>{$a}</em></strong> were selected';
-$string['primary']          = 'Primary?';
+$string['isprimary']        = 'Primary?';
 
 // Report model
 $string['reportname'] = 'Name';
